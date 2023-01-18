@@ -2,10 +2,40 @@
 //
 
 #include <iostream>
+#include <conio.h>
+#include <cstdlib>
+#include <Windows.h>
+#include <time.h>
+
+using namespace std;
+
+void gotoxy(int x, int y)
+{
+    COORD coordinates; // coordinate is declared as COORD
+    coordinates.X = x;
+    coordinates.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coordinates);
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    int i;
+    int playerX, playerY, enemyX, enemyY, seedX, seedY, playerScore, enemyScore = 0;
+    char ch;
+
+    srand(time(NULL));
+
+    for (i = 0; i < 79; i++)
+    {
+        gotoxy(i, 0); cout << "#";
+        gotoxy(i, 40); cout << "#";
+
+        if (i < 40)
+        {
+            gotoxy(0, i); cout << "#";
+            gotoxy(79, i); cout << "#";
+        }
+    }
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

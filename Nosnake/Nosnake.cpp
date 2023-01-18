@@ -19,9 +19,9 @@ void gotoxy(int x, int y)
 
 int main()
 {
-    int i;
-    int playerX, playerY, enemyX, enemyY, seedX, seedY, playerScore, enemyScore = 0;
-    char ch;
+    int i = 0;
+    int playerX, playerY, enemyX, enemyY, seedX, seedY, playerScore = 0, enemyScore = 0;
+    char ch = 'x';
 
     srand(time(NULL));
 
@@ -36,15 +36,110 @@ int main()
             gotoxy(79, i); cout << "#";
         }
     }
+
+    playerX = rand() % 40 + 20;
+    playerY = rand() % 20 + 10;
+    gotoxy(playerX, playerY); cout << '\2';
+
+    enemyX = rand() % 40 + 20;
+    enemyY = rand() % 20 + 10;
+    gotoxy(enemyX, enemyY); cout << '\1';
+
+    seedX = rand() % 74 + 3;
+    seedY = rand() % 35 + 2;
+    gotoxy(seedX, seedY); cout << '@';
+
+    int direction = 0;
+
+    int delay = 0, limit = 5000;
+
+    while (true)
+    {
+        delay++;
+
+        if (delay > limit)
+        {
+            gotoxy(0, 0); cout << " You : " << playerScore << " Enemy : " << enemyScore << " ";
+            delay = 0;
+            switch(direction)
+            {
+            case 72: playerY--; break;
+            case 75: playerX--; break;
+            case 80: playerY++; break;
+            case 77: playerX++; break;
+            }
+
+            if (direction)
+            {
+                if (seedX == enemyX)
+                {
+                    if (seedY > enemyY) enemyY++;
+                    else if (seedY < enemyY) enemyY--;
+                }
+                if (seedX > enemyX) enemyX++; else if (seedX < enemyX) enemyX--;
+            }
+
+            gotoxy(enemyX, enemyY); cout << '\1';
+            gotoxy(playerX, playerY); cout << '\2';
+
+            if (enemyX == seedX && enemyY == seedY)
+            {
+                seedX = rand() % 74 + 3;
+                seedY = rand() % 35 + 2;
+                gotoxy(seedX, seedY); cout << '@';
+                enemyScore += 100;
+                limit -= 100;
+
+            }
+            if (playerX == seedX && playerY == seedY)
+            {
+                seedX = rand() % 74 + 3;
+                seedY = rand() % 35 + 2;
+                gotoxy(seedX, seedY); cout << '@';
+                playerScore += 100;
+                limit -= 100;
+            }
+        }
+
+        if (playerX > 78 || playerX < 1 || playerY>39 || playerY < 1)
+        {
+            gotoxy(40, 20); cout << "GAME OVER ! ";
+            if (playerScore > enemyScore)
+                cout << "You Win "; else if (playerScore < enemyScore) cout << "You Lose"; else cout << "Draw!";
+
+            break;
+        }
+
+
+        if (_kbhit())
+        {
+            //penekanan tombol
+            ch = _getch();
+
+            if (ch == 32)
+            {
+                gotoxy(playerX, playerY); cout << ' ';
+                switch (direction)
+                {
+                case 72: playerY -= 5; break;
+                case 75: playerX -= 5; break;
+                case 80: playerY += 5; break;
+                case 77: playerX += 5; break;
+                }
+
+            }
+
+            if (ch < 0)
+            {
+                ch = _getch();
+                if (ch == 72 || ch == 80 || ch == 75 || ch == 77)
+                {
+                    if (ch % 2 && !(direction % 2))direction = ch;
+                    if (!(ch % 2) && direction % 2)direction = ch;
+
+                }
+            }
+        }
+    }
+    // return EXIT_SUCCESS;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
